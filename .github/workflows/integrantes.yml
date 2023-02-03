@@ -1,0 +1,11 @@
+name: Integrantes
+
+on: workflow_dispatch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Integrantes
+        run: echo João Guilherme de Oliveira Almeida, Yan Lucas Cavalcante Rodrigues!
