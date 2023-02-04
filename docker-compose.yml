@@ -5,24 +5,21 @@ services:
     build:
       context: ./backend
     entrypoint: ["/bin/bash", "./entrypoint.sh"]
-    env_file: ./backend/.env
+    env_file: .env
     depends_on:
       - mysqldb
     ports:
-      - $PORT:$PORT
+      - $BACKEND_PORT:$BACKEND_PORT
     expose:
-      - '$PORT'
+      - '$BACKEND_PORT'
     volumes:
       - ./backend:/usr/app/backend
+      - /usr/app/backend/node_modules
   mysqldb:
     image: mysql
-    env_file: ./backend/.env
+    env_file: .env
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: yes
-      MYSQL_USER: $MYSQL_USER
-      MYSQL_PASSWORD: $MYSQL_PASSWORD
-      MYSQL_DATABASE: $MYSQL_DATABASE
-      MYSQL_PORT: $MYSQL_PORT
     ports:
       - '$MYSQL_PORT:$MYSQL_PORT'
     volumes:
