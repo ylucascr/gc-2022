@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+    entrypoint: ["/bin/bash", "./entrypoint.sh"]
+    env_file: .env
+    depends_on:
+      - backend
+    ports:
+      - $FRONTEND_PORT:$FRONTEND_PORT
+    expose:
+      - '$FRONTEND_PORT'
+    volumes:
+      - ./frontend:/usr/app/frontend
+      - /usr/app/frontend/node_modules
+  backend:
+    build:
+      context: ./backend
+    entrypoint: ["/bin/bash", "./entrypoint.sh"]
+    env_file: .env
+    depends_on:
+      - mysqldb
+    ports:
+      - $BACKEND_PORT:$BACKEND_PORT
+    expose:
+      - '$BACKEND_PORT'
+    volumes:
+      - ./backend:/usr/app/backend
+      - /usr/app/backend/node_modules
+  mysqldb:
+    image: mysql
+    env_file: .env
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: yes
+    ports:
+      - '$MYSQL_PORT:$MYSQL_PORT'
+    volumes:
+      - mysql:/var/lib/mysql
+      - mysql_config:/etc/mysql
+
+volumes:
+  mysql:
+  mysql_config:
