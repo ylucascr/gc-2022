@@ -1,6 +1,20 @@
 version: '3.8'
 
 services:
+  frontend:
+    build:
+      context: ./frontend
+    entrypoint: ["/bin/bash", "./entrypoint.sh"]
+    env_file: .env
+    depends_on:
+      - backend
+    ports:
+      - $FRONTEND_PORT:$FRONTEND_PORT
+    expose:
+      - '$FRONTEND_PORT'
+    volumes:
+      - ./frontend:/usr/app/frontend
+      - /usr/app/frontend/node_modules
   backend:
     build:
       context: ./backend
