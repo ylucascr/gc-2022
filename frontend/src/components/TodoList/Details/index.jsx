@@ -10,9 +10,30 @@ export default function Details() {
   const { id } = useParams();
 
   async function fetchSetDone() {
+    if (todo.isDone) {
+      return;
+    }
+
     const options = {
-      url: `${process.env.API}/todos/${id}`,
-      method: "PUT",
+      url: `${process.env.REACT_APP_API}/todos/${id}/done`,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    };
+
+    await axios.request(options).then(
+      (response) => {
+        navigate("/");
+      }).catch((error) => {
+        console.log(error);
+      });
+  }
+
+  async function fetchDelete() {
+    const options = {
+      url: `${process.env.REACT_APP_API}/todos/${todo.id}`,
+      method: "DELETE",
       headers: {
         "Content-Type": "application/json"
       }
@@ -28,7 +49,7 @@ export default function Details() {
 
   useEffect(() => {
     if (id) {
-      axios.get(`${process.env.API}/todos/${id}`).then(
+      axios.get(`${process.env.REACT_APP_API}/todos/${id}`).then(
         (response) => {
           setTodo(response.data);
         }).catch((error) => {
@@ -47,7 +68,22 @@ export default function Details() {
           {todo?.description}
         </Card.Text>
 
-        <Button onClick={() => fetchSetDone(id)}>Done</Button>
+        <Button
+          className="me-1"
+          variant={"danger"}
+          onClick={() => fetchDelete()}>
+          🗙
+        </Button>
+        <Button
+          className="me-1"
+          onClick={() => navigate(`/${todo.id}/edit`)}>
+          ✎
+        </Button>
+        <Button
+          variant={todo.isDone ? "success" : "outline-success"}
+          onClick={() => fetchSetDone()}>
+          ✓
+        </Button>
       </Card.Body>
     </Card>
   );
